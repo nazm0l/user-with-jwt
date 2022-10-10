@@ -10,11 +10,28 @@ router.post(
   ],
   (req, res) => {
     const { email, password } = req.body;
+
+    //Email and Pass Validation
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(400).json({
         errors: errors.array(),
+      });
+    }
+
+    //validate existing user
+    let user = users.find((user) => {
+      return user.email === email;
+    });
+
+    if (user) {
+      res.status(400).json({
+        errors: [
+          {
+            msg: "User already exist",
+          },
+        ],
       });
     }
 
