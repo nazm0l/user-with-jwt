@@ -1,14 +1,21 @@
 const router = require("express").Router();
 const { check, validationResult } = require("express-validator");
 const { users } = require("../db");
+const bcrypt = require("bcrypt");
 
+//Get all user
+router.get("/users", (req, res) => {
+  res.send(users);
+});
+
+//Add a new user
 router.post(
   "/signup",
   [
     check("email", "Enter a valid Email").isEmail(),
     check("password", "Enter more than 6 char ").isLength({ min: 6 }),
   ],
-  (req, res) => {
+  async (req, res) => {
     const { email, password } = req.body;
 
     //Email and Pass Validation
@@ -35,8 +42,14 @@ router.post(
       });
     }
 
-    console.log(email, password);
-    res.send("got it");
+    let hashedPassword = await bcrypt.hash(password, 10);
+    users.push({
+      email,
+      password: hashedPassword,
+    });
+
+    console.log(email, password, hashedPassword);
+    res.send(users);
   }
 );
 
