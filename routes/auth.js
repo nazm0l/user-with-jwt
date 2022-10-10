@@ -64,7 +64,37 @@ router.post(
 
 //Login user
 
-router.get("/login", (req, res) => {
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  //finding user with email to db
+  let user = users.find((user) => {
+    return user.email === email;
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      errors: [
+        {
+          msg: "Invalid Credentials",
+        },
+      ],
+    });
+  }
+
+  //comparing user pass with hash pass
+  let isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    return res.status(400).json({
+      errors: [
+        {
+          msg: "Invalid Credentials",
+        },
+      ],
+    });
+  }
+
   res.send("Successfully logged in");
 });
 
