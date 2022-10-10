@@ -1,9 +1,13 @@
 const router = require("express").Router();
 const { check, validationResult } = require("express-validator");
+const { users } = require("../db");
 
 router.post(
   "/signup",
-  [check("email").isEmail(), check("password").isLength({ min: 6 })],
+  [
+    check("email", "Enter a valid Email").isEmail(),
+    check("password", "Enter more than 6 char ").isLength({ min: 6 }),
+  ],
   (req, res) => {
     const { email, password } = req.body;
     const errors = validationResult(req);
