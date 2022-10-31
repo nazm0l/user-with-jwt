@@ -58,7 +58,7 @@ router.post(
       { expiresIn: 3600000 }
     );
 
-    res.send(users);
+    res.send(token);
   }
 );
 
